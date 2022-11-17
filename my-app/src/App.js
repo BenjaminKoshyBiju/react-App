@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> Hello there
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { useEffect,useState } from "react";
+import './App.css'
+import'./Movies'
+import Movies from "./Movies";
+import search from './search.svg'
+const API_URL='http://www.omdbapi.com?apikey=efb1f785';
+
+const App=()=>{
+    const [movie,setmovie]=useState([])
+    const [searchTrm,setsearchTrm]=useState('')
+    const searchMovie= async (title)=>{
+        const response=await fetch(`${API_URL}&s=${title}`)
+        const data=await response.json();
+        setmovie(data.Search);
+        
+    }
+    useEffect(() => {
+   searchMovie('Iron man ')
+    },[]);
+    return(
+        <div className="app">
+        <h1>Movies world</h1>
+        <div className="search">
+            <input placeholder="search your Movie" value={searchTrm}
+             onChange={(e)=>setsearchTrm(e.target.value)} />
+            <img src={search} alt="search" onClick={()=>searchMovie(searchTrm)} /> 
+
+        </div>
+        {
+            movie.length>0?(
+                <div className="container">
+                {movie.map((allMovies)=>(
+                <Movies allMovies={allMovies} /> )) }
+    
+            </div>
+            ):(
+                <div className="container">
+                    <h2>No movies found!</h2>
+                    </div>
+            )
+        }
+       
+        </div>
+    );
 }
-
 export default App;
